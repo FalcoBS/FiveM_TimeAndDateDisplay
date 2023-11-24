@@ -1,7 +1,13 @@
-local displayTime = true
-local useMilitaryTime = false
-local displayDayOfWeek = true
-local displayDate = true
+-- Display the Date and Time
+local toprightDisplay = true -- top right if true, top left if false
+
+-- Parts to show
+local displayTime = true -- display time
+local displayDayOfWeek = true -- display day week
+local displayDate = true -- disaplay date
+local useMilitaryTime = false -- default is 12 hours clock you can change this to true to use the 24 hours clock
+
+
 
 local timeAndDateString = nil
 local hour
@@ -10,6 +16,32 @@ local dayOfWeek
 local month
 local dayOfMonth
 local year
+
+local monthlist = {
+    [0] = "January",
+    [1] = "February",
+    [2] = "March",
+    [3] = "April",
+    [4] = "May",
+    [5] = "June",
+    [6] = "July",
+    [7] = "August",
+    [8] = "September",
+    [9] = "October",
+    [10] = "November",
+    [11] = "December",
+}
+
+local weeklist = {
+    [0] = "Sunday",
+    [1] = "Monday",
+    [2] = "Tuesday",
+    [3] = "Wednesday",
+    [4] = "Thursday",
+    [5] = "Friday",
+    [6] = "Saturday",
+}
+
 
 -- Display Time and Date at top right of screen -- format: | 12:13 | Wednesday | January 17, 2017 |
 Citizen.CreateThread(function()
@@ -29,21 +61,36 @@ Citizen.CreateThread(function()
 			CalculateDateToDisplay()
 			timeAndDateString = timeAndDateString .. " " .. month .. " " .. dayOfMonth .. ", " .. year .. " |"
 		end
-		
-		SetTextFont(0)
-		SetTextProportional(1)
-		SetTextScale(0.30, 0.30)
-		SetTextColour(255, 255, 255, 255)
-		SetTextDropshadow(0, 0, 0, 0, 255)
-		SetTextEdge(1, 0, 0, 0, 255)
-		SetTextDropShadow()
-		SetTextOutline()
-		SetTextRightJustify(true)
-		SetTextWrap(0,0.95)
-		SetTextEntry("STRING")
-		
-		AddTextComponentString(timeAndDateString)
-		DrawText(0.5, 0.01)
+        
+        if toprightDisplay then 
+            SetTextFont(0)
+            SetTextProportional(1)
+            SetTextScale(0.30, 0.30)
+            SetTextColour(255, 255, 255, 255)
+            SetTextDropshadow(0, 0, 0, 0, 255)
+            SetTextEdge(1, 0, 0, 0, 255)
+            SetTextDropShadow()
+            SetTextOutline()
+            SetTextRightJustify(true)
+            SetTextWrap(0,0.95)
+            SetTextEntry("STRING")
+            AddTextComponentString(timeAndDateString)
+            DrawText(0.5, 0.01)
+            else
+            SetTextFont(0)
+            SetTextProportional(1)
+            SetTextScale(0.30, 0.30)
+            SetTextColour(255, 255, 255, 255)
+            SetTextDropshadow(0, 0, 0, 0, 255)
+            SetTextEdge(1, 0, 0, 0, 255)
+            SetTextDropShadow()
+            SetTextOutline()
+            SetTextRightJustify(true)
+            SetTextWrap(0.1,0.28)
+            SetTextEntry("STRING")
+            AddTextComponentString(timeAndDateString)
+            DrawText(0.01, 0.01)
+		end
 	end
 end)
 
@@ -52,7 +99,7 @@ function CalculateTimeToDisplay()
 	minute = GetClockMinutes()
 
 	if useMilitaryTime == false then
-		if hour == 0 or hour == 24 then
+		if hour == 0 then
 			hour = 12
 		elseif hour >= 13 then
 			hour = hour - 12
@@ -68,53 +115,11 @@ function CalculateTimeToDisplay()
 end
 
 function CalculateDayOfWeekToDisplay()
-	dayOfWeek = GetClockDayOfWeek()
-	
-	if dayOfWeek == 0 then
-		dayOfWeek = "Sunday"
-	elseif dayOfWeek == 1 then
-		dayOfWeek = "Monday"
-	elseif dayOfWeek == 2 then
-		dayOfWeek = "Tuesday"
-	elseif dayOfWeek == 3 then
-		dayOfWeek = "Wednesday"
-	elseif dayOfWeek == 4 then
-		dayOfWeek = "Thursday"
-	elseif dayOfWeek == 5 then
-		dayOfWeek = "Friday"
-	elseif dayOfWeek == 6 then
-		dayOfWeek = "Saturday"
-	end
+	dayOfWeek = weeklist[GetClockDayOfWeek()]
 end
 
 function CalculateDateToDisplay()
-	month = GetClockMonth()
+	month = monthlist[GetClockMonth()]
 	dayOfMonth = GetClockDayOfMonth()
 	year = GetClockYear()
-	
-	if month == 0 then
-		month = "January"
-	elseif month == 1 then
-		month = "February"
-	elseif month == 2 then
-		month = "March"
-	elseif month == 3 then
-		month = "April"
-	elseif month == 4 then
-		month = "May"
-	elseif month == 5 then
-		month = "June"
-	elseif month == 6 then
-		month = "July"
-	elseif month == 7 then
-		month = "August"
-	elseif month == 8 then
-		month = "September"
-	elseif month == 9 then
-		month = "October"
-	elseif month == 10 then
-		month = "November"
-	elseif month == 11 then
-		month = "December"
-	end
 end
